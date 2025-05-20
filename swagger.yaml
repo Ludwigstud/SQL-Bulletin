@@ -1,0 +1,223 @@
+openapi: 3.0.0
+info:
+  title: Bulletin Board API
+  version: 1.0.0
+  description: API for channels, users, subscriptions, and messages
+
+servers:
+  - url: http://localhost:3000/api
+
+tags:
+  - name: Users
+  - name: Channels
+  - name: Subscriptions
+  - name: Messages
+
+paths:
+  /users:
+    post:
+      tags: [Users]
+      summary: Create a new user
+      requestBody:
+        description: User object
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+      responses:
+        "200":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{id}/channels:
+    get:
+      tags: [Users]
+      summary: List channels a user is subscribed to
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: User ID
+      responses:
+        "200":
+          description: Array of channels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Channel"
+
+  /channels:
+    post:
+      tags: [Channels]
+      summary: Create a new channel
+      requestBody:
+        description: Channel object
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - owner_id
+              properties:
+                name:
+                  type: string
+                owner_id:
+                  type: integer
+      responses:
+        "200":
+          description: Channel created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Channel"
+
+  /subscriptions:
+    post:
+      tags: [Subscriptions]
+      summary: Subscribe a user to a channel
+      requestBody:
+        description: Subscription object
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - channel_id
+              properties:
+                user_id:
+                  type: integer
+                channel_id:
+                  type: integer
+      responses:
+        "200":
+          description: Subscription created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subscription"
+
+  /messages:
+    post:
+      tags: [Messages]
+      summary: Create a message (user must be subscribed)
+      requestBody:
+        description: Message object
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - content
+                - channel_id
+                - author_id
+              properties:
+                content:
+                  type: string
+                channel_id:
+                  type: integer
+                author_id:
+                  type: integer
+      responses:
+        "200":
+          description: Message created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "403":
+          description: Not subscribed to channel
+
+  /channels/{id}/messages:
+    get:
+      tags: [Messages]
+      summary: Get messages from a channel (user must be subscribed)
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: Channel ID
+        - in: query
+          name: user_id
+          schema:
+            type: integer
+          required: true
+          description: User ID (must be subscribed)
+      responses:
+        "200":
+          description: Array of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+        "403":
+          description: Not subscribed to channel
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+
+    Channel:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        owner_id:
+          type: integer
+
+    Subscription:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        channel_id:
+          type: integer
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+        content:
+          type: string
+        channel_id:
+          type: integer
+        author_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time

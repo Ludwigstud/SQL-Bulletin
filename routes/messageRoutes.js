@@ -3,6 +3,7 @@ import { addMessage, listChannelMessages } from "../controllers/messageControlle
 
 const router = Router();
 
-router.post("/", addMessage);
-router.get("/channel/:id", listChannelMessages);
+router.post("/messages", addMessage);
+router.get("/channels/:id/messages", listChannelMessages);
+
 export default router;
