@@ -1,13 +1,22 @@
 {
-	"sqltools.connections": [
-		{
-			"previewLimit": 50,
-			"server": "localhost",
-			"port": 5432,
-			"driver": "PostgreSQL",
-			"database": "postgres",
-			"username": "ludde",
-			"name": "examination"
-		}
-	]
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "database": "postgres",
+      "username": "ludde",
+      "name": "examination"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "bulletin",
+      "database": "postgres",
+      "username": "postgres"
+    }
+  ]
 }
